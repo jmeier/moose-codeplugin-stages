@@ -253,3 +253,5 @@ share/
 
 # localized copy of codeplugin.template.mk
 codeplugin.local.mk
+
+!img/install.png

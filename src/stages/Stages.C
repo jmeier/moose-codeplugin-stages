@@ -15,43 +15,43 @@ registerMooseObject(MOOSEAPPNAME, Stages);
 InputParameters
 Stages::validParams()
 {
-  std::cout << "Stages::validParams (start)" << "\n";
+  // std::cout << "Stages::validParams (start)" << "\n";
   InputParameters params = GeneralUserObject::validParams();
   // params.declareControllable("enable"); // allows Control to enable/disable this type of object
   // params.registerBase("Stages");
   params.addClassDescription("User object that holds all stages.");
-  std::cout << "Stages::validParams (done)" << "\n";
+  // std::cout << "Stages::validParams (done)" << "\n";
   return params;
 }
 
 Stages::Stages(const InputParameters & parameters)
   : GeneralUserObject(parameters)
 {
-  std::cout << "Stages::Stages" << "\n";
+  // std::cout << "Stages::Stages" << "\n";
 }
 
 void
 Stages::initialize()
 {
-  std::cout << "Stages::initialize (start)" << "\n";
+  // std::cout << "Stages::initialize (start)" << "\n";
 }
 
 void
 Stages::execute()
 {
-  std::cout << "Stages::execute (start)" << "\n";
+  // std::cout << "Stages::execute (start)" << "\n";
 }
 
 void
 Stages::finalize()
 {
-  std::cout << "Stages::finalize (start)" << "\n";
+  // std::cout << "Stages::finalize (start)" << "\n";
 }
 
 void
 Stages::addStage(Stage & stg)
 {
-  std::cout << "Stages::addStage (start)" << "\n";
+  // std::cout << "Stages::addStage (start)" << "\n";
 
   // There can only be one stage for a given point in time
   // test, if the time of 'stg' is already defined.
@@ -77,7 +77,7 @@ Stages::addStage(Stage & stg)
 std::vector<std::reference_wrapper<Stage>>
 Stages::getStages()
 {
-  std::cout << "Stages::getStages (start)" << "\n";
+  // std::cout << "Stages::getStages (start)" << "\n";
   return _stages;
 }
 
