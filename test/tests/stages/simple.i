@@ -13,6 +13,7 @@ z_top = 10.0
 []
 
 Box2_inactive_id = '3'
+Box2_inactive_name = 'Box2_inactive'
 inactive_block_ids = ${Box2_inactive_id}
 
 [Mesh]
@@ -21,13 +22,13 @@ inactive_block_ids = ${Box2_inactive_id}
     type = GeneratedMeshGenerator
     elem_type = "TET10"
     dim = 3
-    nx = 20
-    ny = 20
+    nx = 3
+    ny = 3
     nz = 2
-    xmin = -10
-    xmax = +10
-    ymin = -10
-    ymax = +10
+    xmin = -6
+    xmax = +6
+    ymin = -6
+    ymax = +6
     zmin = -2
     zmax = +2
   []
@@ -50,8 +51,8 @@ inactive_block_ids = ${Box2_inactive_id}
     top_right   = "+2 +2 0"
   []
 
-  add_subdomain_ids = ${inactive_block_ids}
-
+  add_subdomain_ids = '${inactive_block_ids}'
+  add_subdomain_names = '${Box2_inactive_name}'
 []
 
 active_block_ids =  '1 2' #Box1 Box2
