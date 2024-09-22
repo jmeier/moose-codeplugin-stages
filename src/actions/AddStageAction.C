@@ -38,7 +38,7 @@ AddStageAction::AddStageAction(const InputParameters & params) : MooseObjectActi
 void
 AddStageAction::act()
 {
-  std::cout << "AddStageAction.act: _type = " << _type << "; " << "_name = " << _name << "\n";
+  // std::cout << "AddStageAction.act: _type = " << _type << "; " << "_name = " << _name << "\n";
 
   // find the stages-object
   if (_problem->hasUserObject("Stages") == false)

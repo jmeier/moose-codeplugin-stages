@@ -27,22 +27,22 @@ AddStagesAction::validParams()
 
 AddStagesAction::AddStagesAction(const InputParameters & params) : MooseObjectAction(params)
 {
-  std::cout << "AddStagesAction.AddStagesAction: _type = " << _type << "; " << "_name = " << _name
-            << "\n";
+  // std::cout << "AddStagesAction.AddStagesAction: _type = " << _type << "; " << "_name = " << _name
+  //           << "\n";
 }
 
 void
 AddStagesAction::act()
 {
-  std::cout << "AddStagesAction.act: _type = " << _type << "; " << "_name = " << _name << "\n"
-            << std::flush;
+  // std::cout << "AddStagesAction.act: _type = " << _type << "; " << "_name = " << _name << "\n"
+  //           << std::flush;
 
   if (_problem->hasUserObject("Stages") == false)
   {
-    std::cout << "AddStagesAction.act: no user object of name "
-                 "Stages"
-                 "\n"
-              << std::flush;
+    // std::cout << "AddStagesAction.act: no user object of name "
+    //              "Stages"
+    //              "\n"
+    //           << std::flush;
     _problem->addUserObject(/*type=*/"Stages", /*name=*/"Stages", _moose_object_pars);
   };
 }

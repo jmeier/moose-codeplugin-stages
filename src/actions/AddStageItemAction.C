@@ -28,13 +28,13 @@ AddStageItemAction::validParams()
 
 AddStageItemAction::AddStageItemAction(const InputParameters & params) : MooseObjectAction(params)
 {
-  std::cout << "AddStageItemAction.AddStageItemAction: _type = " << _type << "; " << "_name = " << _name << "\n";
+  // std::cout << "AddStageItemAction.AddStageItemAction: _type = " << _type << "; " << "_name = " << _name << "\n";
 }
 
 void
 AddStageItemAction::act()
 {
-  std::cout << "AddStageItemAction.act: _type = " << _type << "; " << "_name = " << _name << "\n";
+  // std::cout << "AddStageItemAction.act: _type = " << _type << "; " << "_name = " << _name << "\n";
 
   // Find the parental stage object
   auto & aw = _app.actionWarehouse();

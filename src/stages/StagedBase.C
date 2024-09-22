@@ -28,7 +28,7 @@ StagedBase::StagedBase(const InputParameters & parameters)
   _name(getParam<std::string>("_name")),
   _stage(getParam<Stage *>("_stage"))
 {
-  std::cout << "StagedBase::StagedBase: _type = " << typeid(this).name() << "; name = " << _name  << "; parent = " << _stage->getName() << "\n";
+  // std::cout << "StagedBase::StagedBase: _type = " << typeid(this).name() << "; name = " << _name  << "; parent = " << _stage->getName() << "\n";
 }
 
 std::string

@@ -29,7 +29,7 @@ Stage::Stage(const InputParameters & parameters)
     _name(getParam<std::string>("_name")),
     _stage_time(getParam<Real>("t"))
 {
-  std::cout << "Stage::Stage" << "\n";
+  // std::cout << "Stage::Stage" << "\n";
 }
 
 std::string
