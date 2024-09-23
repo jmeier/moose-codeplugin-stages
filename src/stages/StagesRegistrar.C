@@ -1,4 +1,3 @@
-#include "shaleApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
