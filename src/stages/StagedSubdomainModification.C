@@ -28,7 +28,7 @@ StagedSubdomainModification::StagedSubdomainModification(const InputParameters &
     _subdomains_from(getParam<std::vector<SubdomainName>>("from")),
     _subdomains_to(getParam<std::vector<SubdomainName>>("to"))
 {
-  std::cout << "StagedSubdomainModification::StagedSubdomainModification" << "\n";
+  // std::cout << "StagedSubdomainModification::StagedSubdomainModification" << "\n";
 
   auto const n_subdomains_from = _subdomains_from.size();
   auto const n_subdomains_to = _subdomains_to.size();
