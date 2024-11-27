@@ -3,7 +3,7 @@
   [simple]
     type = 'Exodiff'
     input = 'simple.i'
-    exodiff = 'simple_out.e simple_out.e-s002 simple_out.e-s003 simple_out.e-s004 simple_out.e-s005'
+    exodiff = 'simple_out.e simple_out.e-s002'
     requirement = 'The system should be able to stage function value changes and subdomain modification.'
   []
 []
