@@ -6,4 +6,10 @@
     exodiff = 'simple_out.e simple_out.e-s002'
     requirement = 'The system should be able to stage function value changes and subdomain modification.'
   []
+  [enable_disable]
+    type = 'CSVDiff'
+    input = 'enable_disable.i'
+    csvdiff = 'enable_disable_out.csv'
+    requirement = 'The system should be able to stage control system enable and disable.'
+  []
 []
