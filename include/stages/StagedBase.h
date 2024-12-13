@@ -34,6 +34,9 @@ public:
 
   virtual std::vector<Real> getTimesForTimeStepper();
 
+protected:
+  Real parseTime(std::string s);
+
 private:
   const std::string _name;
 
