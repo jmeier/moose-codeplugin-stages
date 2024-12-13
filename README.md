@@ -67,7 +67,7 @@ is to be added defining the staged changes.
 []
 ```
 
-### `StagedTimeSequenceStepper`
+### `StagedTimeSequenceStepper` <a name="StagedTimeSequenceStepper"></a>
 
 To ease synchronizing the staged changes in the `[Stages]` block and the
 time steps of the model, a time stepper of type `StagedTimeSequenceStepper`
@@ -184,6 +184,23 @@ Example code for enabling objects:
   [Stage7]
     t = 7
     enable_objects = 'Postprocessors::time_switch'
+  []
+[]
+```
+
+### Staged additional time steps
+
+If additional time steps are required (e.g. between stages), the `StagedAdditionalTimeStep` block can be used in conjunction with a
+[`StagedTimeSequenceStepper`](#StagedTimeSequenceStepper):
+
+```
+[Stages]
+  [StageX]
+    t = 3.0
+    [StageX_AddtionalTimestep]
+      type = 'StagedAdditionalTimeStep'
+      time = 't - 0.2' #adds a time step shortly before 't'
+    []
   []
 []
 ```
