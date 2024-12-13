@@ -59,6 +59,16 @@ StagedTimeSequenceStepper::init()
         // ask the sb_item for points in time to add
         std::vector<Real> sb_item_times = sb_item.getTimesForTimeStepper();
 
+        // debug-output...
+        // std::cout << sb_item.getName() << " reports: ";
+        // for (int kk = 0; kk < sb_item_times.size(); ++kk)
+        // {
+        //   if (kk > 0)
+        //     std::cout << ";";
+        //   std::cout << sb_item_times[kk];
+        // }
+        // std::cout << "\n" << std::flush;
+
         // append to time_sequence
         time_sequence.insert(std::end(time_sequence), std::begin(sb_item_times), std::end(sb_item_times));
       };

@@ -52,5 +52,8 @@ private:
   const Real _start_time;
   const Real _end_time;
 
+  const bool _register_start_time;
+  const bool _register_end_time;
+
   Real parseTime(std::string s);
 };

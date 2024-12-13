@@ -27,6 +27,10 @@ StagedFunctionValueChange::validParams()
                                "Start time for the transition to the new value.");
   params.addParam<std::string>("end_time", "t",
                                "End time at which the new value must be fully reached.");
+  params.addParam<bool>("register_start_time", false,
+                        "If set to true, start_time is registered with TimeSteppers.");
+  params.addParam<bool>("register_end_time", true,
+                        "If set to true, end_time is registered with TimeSteppers.");
   MooseEnum step_function_type_choice("Linear=0 Smooth=1 Perlin=2", "Perlin");
   params.addParam<MooseEnum>("step_function_type", step_function_type_choice,
                              "Type of the step function used for the transition.");
@@ -40,7 +44,9 @@ StagedFunctionValueChange::StagedFunctionValueChange(const InputParameters & par
     _step_function_type(getParam<MooseEnum>("step_function_type").getEnum<StepFunctionType>()),
     _new_values(getParam<std::vector<double>>("new_values")),
     _start_time(parseTime(getParam<std::string>("start_time"))),
-    _end_time(parseTime(getParam<std::string>("end_time")))
+    _end_time(parseTime(getParam<std::string>("end_time"))),
+    _register_start_time(getParam<bool>("register_start_time")),
+    _register_end_time(getParam<bool>("register_end_time"))
 {
   // consistency check: start time must not be larger than end time
   if (_start_time > _end_time)
@@ -119,7 +125,15 @@ StagedFunctionValueChange::getEndTime()
 std::vector<Real>
 StagedFunctionValueChange::getTimesForTimeStepper()
 {
-  return {_start_time, _end_time};
+  std::vector<Real> times;
+
+  if (_register_start_time)
+    times.push_back(_start_time);
+
+  if (_register_end_time)
+    times.push_back(_end_time);
+
+  return times;
 }
 
 double
