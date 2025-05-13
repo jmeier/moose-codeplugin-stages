@@ -2,6 +2,18 @@
 
 This MooseApp code plugin contains a set of MooseObjects providing the [Stages] input file blocks.
 
+**Overview** <a name="overview"></a>
+
+In many Moose models, a large number of individual state changes must be modelled in a coordinated
+and consistent manner. This functionality is required for modelling construction processes, for
+example. While Moose does support such time-dependent model changes in principle, they must be
+entered at a large number of points in the input file. As Moose input files can quickly have more
+than 1000 lines, this results in a significant potential for errors and hinders quality control.
+
+To ease the input and checking of model states, a group of Moose objects was created with the
+'Stages' objects in this repository. This enables consecutive changes in the model to be defined
+at a central location in a Moose input file.
+
 **Table of Contents** <a name="toc"></a>
 - [Setup for Users](#setup)
 - [Usage](#usage)
