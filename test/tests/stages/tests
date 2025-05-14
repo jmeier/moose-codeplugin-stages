@@ -12,4 +12,10 @@
     csvdiff = 'enable_disable_out.csv'
     requirement = 'The system should be able to stage control system enable and disable.'
   []
+  [staged_function]
+    type = 'CSVDiff'
+    input = 'staged_function.i'
+    csvdiff = 'staged_function_out.csv'
+    requirement = 'The system should be able to stage function values.'
+  []
 []

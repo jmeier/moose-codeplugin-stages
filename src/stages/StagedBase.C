@@ -26,10 +26,11 @@ StagedBase::validParams()
 
 StagedBase::StagedBase(const InputParameters & parameters)
   : GeneralUserObject(parameters),
-  _name(getParam<std::string>("_name")),
-  _stage(getParam<Stage *>("_stage"))
+    _name(getParam<std::string>("_name")),
+    _stage(getParam<Stage *>("_stage"))
 {
-  // std::cout << "StagedBase::StagedBase: _type = " << typeid(this).name() << "; name = " << _name  << "; parent = " << _stage->getName() << "\n";
+  // std::cout << "StagedBase::StagedBase: _type = " << typeid(this).name() << "; name = " << _name
+  // << "; parent = " << _stage->getName() << "\n";
 }
 
 std::string
@@ -71,8 +72,11 @@ StagedBase::getTimesForTimeStepper()
 }
 
 Real
-StagedBase::parseTime(std::string s)
+StagedBase::parseTime(std::string s, bool allow_empty)
 {
+  if (allow_empty && isWhitespace(s))
+    return std::nan("");
+
   // regex for parsing strings like "t-1.6E+12.23", "t + 0.1", or just "t"
   std::regex rx("^\\s*t\\s*(?:([+-])\\s*([+-]?[0-9]*[.]?[0-9]*\\s*[Ee]?\\s*[+-]?\\s*[0-9.]+))?\\s*$");
   std::smatch m;
@@ -80,8 +84,8 @@ StagedBase::parseTime(std::string s)
   {
     // we've got a regex match - relative point in time given
 
-    std::string g1 = m[1].str();  // plus or minus
-    std::string g2 = m[2].str();  // offset as floating point number
+    std::string g1 = m[1].str(); // plus or minus
+    std::string g2 = m[2].str(); // offset as floating point number
 
     auto stage = getStage();
     auto stage_t = stage->getStageTime();
@@ -90,7 +94,9 @@ StagedBase::parseTime(std::string s)
     {
       // just "t" - we return stage_t
       return stage_t;
-    } else {
+    }
+    else
+    {
       // we've got an offset; lets parse and apply it to stage_t
       Real res;
       std::stringstream sval(g2);
@@ -99,11 +105,15 @@ StagedBase::parseTime(std::string s)
       if (g1 == "+")
       {
         return stage_t + res;
-      } else {
+      }
+      else
+      {
         return stage_t - res;
       };
     };
-  } else {
+  }
+  else
+  {
     // absolute point in time given
     Real res;
     std::stringstream sval(s);
@@ -111,4 +121,16 @@ StagedBase::parseTime(std::string s)
 
     return res;
   }
+}
+
+bool
+StagedBase::isWhitespace(std::string s)
+{
+  const auto n = s.length();
+  for (long unsigned int index = 0; index < n; index++)
+  {
+    if (!std::isspace(s[index]))
+      return false;
+  }
+  return true;
 }

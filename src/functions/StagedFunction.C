@@ -15,6 +15,7 @@
 #include "FEProblemBase.h"
 #include "Stage.h"
 #include "Stages.h"
+#include "Transient.h"
 
 registerMooseObject(MOOSEAPPNAME, StagedFunction);
 
@@ -95,6 +96,10 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
     mooseError("Stages user object not found.");
   Stages & stgs = fe_problem->getUserObject<Stages>("Stages");
 
+  // get the start time of the executioner
+  const auto transient_executioner = dynamic_cast<Transient *>(_app.getExecutioner());
+  const auto exec_start_time  = transient_executioner->getStartTime();
+
   // iterate all stages
   std::vector<std::reference_wrapper<Stage>> vecStages = stgs.getStages();
   int n = vecStages.size();
@@ -102,6 +107,10 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
   {
     Stage & stg = vecStages[i].get();
     std::string function_name = name();
+
+    Stage & prev_stg = vecStages[std::max(0, i-1)].get();
+
+    const Real stage_start_time = (i==0) ? (exec_start_time) : (prev_stg.getStageTime());
 
     // iterate all items of this stage
     auto items = stg.getItems();
@@ -119,6 +128,14 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
         if (funcIndex >= 0)
         {
           auto t1 = fvc.getStartTime();
+          if (std::isnan(t1))
+            {
+              if (i==0) // this is the first stage!
+                t1 = stage_start_time;
+              else
+                t1 = prev_stg.getStageTime();
+            }
+
           auto t2 = fvc.getEndTime();
 
           if (t1 < last_time)
@@ -131,9 +148,9 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
             if (t2 >=t)
             {
               if (timeDerivative == true) {
-                return fvc.getTimeDerivative(funcIndex, t, y);
+                return fvc.getTimeDerivative(funcIndex, t, y, stage_start_time);
               } else {
-                return fvc.getValue(funcIndex, t, y);
+                return fvc.getValue(funcIndex, t, y, stage_start_time);
               };
             } else {
               y = fvc.getNewValue(funcIndex);

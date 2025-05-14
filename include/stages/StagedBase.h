@@ -35,11 +35,13 @@ public:
   virtual std::vector<Real> getTimesForTimeStepper();
 
 protected:
-  Real parseTime(std::string s);
+  Real parseTime(std::string s, bool allow_empty = false);
 
 private:
   const std::string _name;
 
   // Pointer to the owning stage
   Stage * const _stage;
+
+  bool isWhitespace(std::string s);
 };

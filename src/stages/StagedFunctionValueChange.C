@@ -19,19 +19,21 @@ StagedFunctionValueChange::validParams()
   // params.declareControllable("enable"); // allows Control to enable/disable this type of object
   // params.registerBase("StagedFunctionValueChange");
   params.addRequiredParam<std::vector<std::string>>("function_names",
-                                       "Names of the staged state variable.");
-  params.addRequiredParam<std::vector<double>>("new_values",
-                                  "Values of the variable at end time.");
-  params.addParam<std::string>("start_time", "t",
-                               "Start time for the transition to the new value.");
-  params.addParam<std::string>("end_time", "t",
-                               "End time at which the new value must be fully reached.");
-  params.addParam<bool>("register_start_time", false,
-                        "If set to true, start_time is registered with TimeSteppers.");
-  params.addParam<bool>("register_end_time", true,
-                        "If set to true, end_time is registered with TimeSteppers.");
+                                                    "Names of the staged state variable.");
+  params.addRequiredParam<std::vector<double>>("new_values", "Values of the variable at end time.");
+  params.addParam<std::string>("start_time",
+                               "",
+                               "Start time for the transition to the new value. If uset, "
+                               "the time of the previous stage is used.");
+  params.addParam<std::string>(
+      "end_time", "t", "End time at which the new value must be fully reached.");
+  params.addParam<bool>(
+      "register_start_time", false, "If set to true, start_time is registered with TimeSteppers.");
+  params.addParam<bool>(
+      "register_end_time", true, "If set to true, end_time is registered with TimeSteppers.");
   MooseEnum step_function_type_choice("Linear=0 Smooth=1 Perlin=2", "Perlin");
-  params.addParam<MooseEnum>("step_function_type", step_function_type_choice,
+  params.addParam<MooseEnum>("step_function_type",
+                             step_function_type_choice,
                              "Type of the step function used for the transition.");
   params.addClassDescription("User object that holds a single state change for a state variable.");
   return params;
@@ -42,14 +44,14 @@ StagedFunctionValueChange::StagedFunctionValueChange(const InputParameters & par
     _function_names(getParam<std::vector<std::string>>("function_names")),
     _step_function_type(getParam<MooseEnum>("step_function_type").getEnum<StepFunctionType>()),
     _new_values(getParam<std::vector<double>>("new_values")),
-    _start_time(parseTime(getParam<std::string>("start_time"))),
+    _start_time(parseTime(getParam<std::string>("start_time"), /*allow_empty=*/true)),
     _end_time(parseTime(getParam<std::string>("end_time"))),
     _register_start_time(getParam<bool>("register_start_time")),
     _register_end_time(getParam<bool>("register_end_time"))
 {
   // consistency check: start time must not be larger than end time
-  if (_start_time > _end_time)
-    mooseError("Start time is larger than end time in stage \"" + getStage()->getName() + "\"." );
+  if (!std::isnan(_start_time) && _start_time > _end_time)
+    mooseError("Start time is larger than end time in stage \"" + getStage()->getName() + "\".");
 }
 
 void
@@ -59,7 +61,8 @@ StagedFunctionValueChange::setup(std::shared_ptr<FEProblemBase> p)
   {
     if (p->hasFunction(function_name) == false)
     {
-      mooseError("Function \"" + function_name + "\" not found. Please add a function of this name and of type 'StagedFunction'.");
+      mooseError("Function \"" + function_name +
+                 "\" not found. Please add a function of this name and of type 'StagedFunction'.");
       // TODO: add function if missing (the code below comes too late...
       auto type = "StagedFunction";
       auto original_params = _factory.getValidParams(type);
@@ -83,13 +86,13 @@ StagedFunctionValueChange::getIndexOfFunction(std::string function_name)
   {
     // name not in vector
     return -1;
-  } else
+  }
+  else
   {
     auto index = std::distance(_function_names.begin(), it);
     return index;
   }
 }
-
 
 StagedFunctionValueChange::StepFunctionType
 StagedFunctionValueChange::getStepFunctionType()
@@ -126,7 +129,7 @@ StagedFunctionValueChange::getTimesForTimeStepper()
 {
   std::vector<Real> times;
 
-  if (_register_start_time)
+  if (_register_start_time && !std::isnan(_start_time))
     times.push_back(_start_time);
 
   if (_register_end_time)
@@ -136,24 +139,31 @@ StagedFunctionValueChange::getTimesForTimeStepper()
 }
 
 double
-StagedFunctionValueChange::getValue(const int funcIndex, const Real t, const double old_value)
+StagedFunctionValueChange::getValue(const int funcIndex,
+                                    const Real t,
+                                    const double old_value,
+                                    const Real stage_start_time)
 {
-  if (t < _start_time)
+  const Real start_time = (std::isnan(_start_time)) ? (stage_start_time) : (_start_time);
+
+  if (t < start_time)
   {
 
-    // we are before _start_time - just return the old value
+    // we are before start_time - just return the old value
     return old_value;
-
-  } else if (t >= _end_time) {
+  }
+  else if (t >= _end_time)
+  {
 
     // we are at or after _end_time - just return the new value
     return _new_values[funcIndex];
+  }
+  else
+  {
 
-  } else {
-
-    // we are in between _start_time and _end_time
+    // we are in between start_time and _end_time
     // let's calculate the dimensionless factor 'f' for time [0..1]
-    const double f = (t - _start_time) / (_end_time - _start_time);
+    const double f = (t - start_time) / (_end_time - start_time);
 
     if (_step_function_type == StepFunctionType::LINEAR)
       return old_value + (_new_values[funcIndex] - old_value) * f;
@@ -175,36 +185,43 @@ StagedFunctionValueChange::getValue(const int funcIndex, const Real t, const dou
 }
 
 double
-StagedFunctionValueChange::getTimeDerivative(const int funcIndex, const Real t, const double old_value)
+StagedFunctionValueChange::getTimeDerivative(const int funcIndex,
+                                             const Real t,
+                                             const double old_value,
+                                             const Real stage_start_time)
 {
-  if (t < _start_time)
+  const Real start_time = (std::isnan(_start_time)) ? (stage_start_time) : (_start_time);
+
+  if (t < start_time)
   {
 
-    // we are before _start_time - time derivative is zero
+    // we are before start_time - time derivative is zero
     return 0;
-
-  } else if (t >= _end_time) {
+  }
+  else if (t >= _end_time)
+  {
 
     // we are at or after _end_time - time derivative is zero
     return 0;
+  }
+  else
+  {
 
-  } else {
-
-    // please note: this code path is never active if _start_time
+    // please note: this code path is never active if start_time
     // equals _end_time, so no need for checking
 
     if (_step_function_type == StepFunctionType::LINEAR)
-      return (_new_values[funcIndex] - old_value) / (_end_time - _start_time);
+      return (_new_values[funcIndex] - old_value) / (_end_time - start_time);
 
     if (_step_function_type == StepFunctionType::SMOOTH)
     {
-      Real const x = (t -_start_time) / (_end_time - _start_time);
+      Real const x = (t - start_time) / (_end_time - start_time);
       return (old_value - _new_values[funcIndex]) * 6 * (-1 + x) * x;
     };
 
     if (_step_function_type == StepFunctionType::PERLIN)
     {
-      Real const x = (t -_start_time) / (_end_time - _start_time);
+      Real const x = (t - start_time) / (_end_time - start_time);
       return (old_value - _new_values[funcIndex]) * -30 * (-1 + x) * (-1 + x) * x * x;
     };
 

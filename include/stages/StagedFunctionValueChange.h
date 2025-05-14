@@ -40,8 +40,8 @@ public:
   Real getStartTime();
   Real getEndTime();
 
-  double getValue(const int funcIndex, const Real t, const double old_value);
-  double getTimeDerivative(const int funcIndex, const Real t, const double old_value);
+  double getValue(const int funcIndex, const Real t, const double old_value, const Real stage_start_time);
+  double getTimeDerivative(const int funcIndex, const Real t, const double old_value, const Real stage_start_time);
 
   std::vector<Real> getTimesForTimeStepper() override;
 
