@@ -68,14 +68,20 @@ StagedBase::setup(std::shared_ptr<FEProblemBase>)
 std::vector<Real>
 StagedBase::getTimesForTimeStepper(const Real stage_start_time)
 {
+  (void)stage_start_time; // silence compiler warning about unused variable
   return {};
 }
 
 Real
 StagedBase::parseTime(std::string s, bool allow_empty)
 {
-  if (allow_empty && isWhitespace(s))
-    return std::nan("");
+  if (isWhitespace(s))
+  {
+    if (allow_empty)
+      return std::nan("");
+    else
+      mooseError("Argument for 'parse time' is empty or only whitespace.");
+  }
 
   // regex for parsing strings like "t-1.6E+12.23", "t + 0.1", or just "t"
   std::regex rx("^\\s*t\\s*(?:([+-])\\s*([+-]?[0-9]*[.]?[0-9]*\\s*[Ee]?\\s*[+-]?\\s*[0-9.]+))?\\s*$");
@@ -133,14 +139,14 @@ StagedBase::parseTimes(std::string s, std::string delimiter)
   std::vector<std::string> items = split(s, delimiter);
 
   // debug-output...
-  std::cout << "Splitting \"" << s << "\" with delimiter \"" << delimiter << "\" gives " << items.size() << " items: ";
-  for (int kk = 0; kk < items.size(); ++kk)
-  {
-    if (kk > 0)
-      std::cout << ";";
-    std::cout << """" << items[kk] << """";
-  }
-  std::cout << "\n" << std::flush;
+  // std::cout << "Splitting \"" << s << "\" with delimiter \"" << delimiter << "\" gives " << items.size() << " items: ";
+  // for (int kk = 0; kk < items.size(); ++kk)
+  // {
+  //   if (kk > 0)
+  //     std::cout << ";";
+  //   std::cout << """" << items[kk] << """";
+  // }
+  // std::cout << "\n" << std::flush;
 
 
   // convert all items
