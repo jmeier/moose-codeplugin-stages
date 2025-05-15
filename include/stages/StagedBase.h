@@ -32,7 +32,7 @@ public:
   std::string getName();
   Stage * getStage();
 
-  virtual std::vector<Real> getTimesForTimeStepper();
+  virtual std::vector<Real> getTimesForTimeStepper(const Real stage_start_time);
 
 protected:
   Real parseTime(std::string s, bool allow_empty = false);

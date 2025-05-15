@@ -40,6 +40,10 @@
       start_time = 't-0.5'
       step_function_type = 'LINEAR'
     []
+    [Stage2_AdditionalTimeStep]
+      type = 'StagedAdditionalTimeStep'
+      count = 4
+    []
   []
   [Stage3]
     t = 3.0
@@ -47,6 +51,10 @@
       type = 'StagedFunctionValueChange'
       function_names = 'MyStagedFunctions'
       new_values = '    4.0'
+    []
+    [Stage3_AdditionalTimeStep]
+      type = 'StagedAdditionalTimeStep'
+      # attentional left empty..
     []
   []
   [Stage4]

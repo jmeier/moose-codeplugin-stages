@@ -66,7 +66,7 @@ StagedBase::setup(std::shared_ptr<FEProblemBase>)
 }
 
 std::vector<Real>
-StagedBase::getTimesForTimeStepper()
+StagedBase::getTimesForTimeStepper(const Real stage_start_time)
 {
   return {};
 }
@@ -126,8 +126,22 @@ StagedBase::parseTime(std::string s, bool allow_empty)
 std::vector<Real>
 StagedBase::parseTimes(std::string s, std::string delimiter)
 {
+  if (isWhitespace(s))
+    return {};
+
   // split the input string
   std::vector<std::string> items = split(s, delimiter);
+
+  // debug-output...
+  std::cout << "Splitting \"" << s << "\" with delimiter \"" << delimiter << "\" gives " << items.size() << " items: ";
+  for (int kk = 0; kk < items.size(); ++kk)
+  {
+    if (kk > 0)
+      std::cout << ";";
+    std::cout << """" << items[kk] << """";
+  }
+  std::cout << "\n" << std::flush;
+
 
   // convert all items
   std::vector<Real> times;

@@ -43,7 +43,7 @@ public:
   double getValue(const int funcIndex, const Real t, const double old_value, const Real stage_start_time);
   double getTimeDerivative(const int funcIndex, const Real t, const double old_value, const Real stage_start_time);
 
-  std::vector<Real> getTimesForTimeStepper() override;
+  std::vector<Real> getTimesForTimeStepper(const Real stage_start_time) override;
 
 private:
   const std::vector<std::string> _function_names;

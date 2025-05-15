@@ -125,12 +125,17 @@ StagedFunctionValueChange::getEndTime()
 }
 
 std::vector<Real>
-StagedFunctionValueChange::getTimesForTimeStepper()
+StagedFunctionValueChange::getTimesForTimeStepper(const Real stage_start_time)
 {
   std::vector<Real> times;
 
-  if (_register_start_time && !std::isnan(_start_time))
-    times.push_back(_start_time);
+  if (_register_start_time)
+    {
+      if (std::isnan(_start_time))
+        times.push_back(stage_start_time);
+      else
+        times.push_back(_start_time);
+    }
 
   if (_register_end_time)
     times.push_back(_end_time);

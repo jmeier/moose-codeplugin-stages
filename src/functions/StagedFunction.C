@@ -29,10 +29,7 @@ StagedFunction::validParams()
   return params;
 }
 
-StagedFunction::StagedFunction(const InputParameters & parameters)
-  : Function(parameters)
-{
-}
+StagedFunction::StagedFunction(const InputParameters & parameters) : Function(parameters) {}
 
 Real
 StagedFunction::value(Real t, const Point & /*p*/) const
@@ -98,7 +95,7 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
 
   // get the start time of the executioner
   const auto transient_executioner = dynamic_cast<Transient *>(_app.getExecutioner());
-  const auto exec_start_time  = transient_executioner->getStartTime();
+  const auto exec_start_time = transient_executioner->getStartTime();
 
   // iterate all stages
   std::vector<std::reference_wrapper<Stage>> vecStages = stgs.getStages();
@@ -108,9 +105,9 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
     Stage & stg = vecStages[i].get();
     std::string function_name = name();
 
-    Stage & prev_stg = vecStages[std::max(0, i-1)].get();
+    Stage & prev_stg = vecStages[std::max(0, i - 1)].get();
 
-    const Real stage_start_time = (i==0) ? (exec_start_time) : (prev_stg.getStageTime());
+    const Real stage_start_time = (i == 0) ? (exec_start_time) : (prev_stg.getStageTime());
 
     // iterate all items of this stage
     auto items = stg.getItems();
@@ -129,49 +126,53 @@ StagedFunction::getValueInternal(const Real t, const bool timeDerivative) const
         {
           auto t1 = fvc.getStartTime();
           if (std::isnan(t1))
-            {
-              if (i==0) // this is the first stage!
-                t1 = stage_start_time;
-              else
-                t1 = prev_stg.getStageTime();
-            }
+          {
+            if (i == 0) // this is the first stage!
+              t1 = stage_start_time;
+            else
+              t1 = prev_stg.getStageTime();
+          }
 
           auto t2 = fvc.getEndTime();
 
           if (t1 < last_time)
           {
-            mooseError("Time spans for staged function \"" + function_name + "\" are overlapping.");
+            mooseError("Time spans for staged function \"" + function_name +
+                       "\" are overlapping. Previous time was " + std::to_string(last_time) +
+                       " and current time is " + std::to_string(t1) + ".");
           };
 
           if (t1 <= t)
           {
-            if (t2 >=t)
+            if (t2 >= t)
             {
-              if (timeDerivative == true) {
+              if (timeDerivative == true)
+              {
                 return fvc.getTimeDerivative(funcIndex, t, y, stage_start_time);
-              } else {
+              }
+              else
+              {
                 return fvc.getValue(funcIndex, t, y, stage_start_time);
               };
-            } else {
+            }
+            else
+            {
               y = fvc.getNewValue(funcIndex);
             };
-
           };
 
           last_time = t2;
-
         };
-
       };
-
     };
-
   };
 
-  if (timeDerivative == true) {
+  if (timeDerivative == true)
+  {
     return 0.0;
-  } else {
+  }
+  else
+  {
     return y;
   };
-
 }
