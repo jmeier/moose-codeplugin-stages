@@ -24,7 +24,7 @@ StagedFunction::validParams()
 {
   InputParameters params = Function::validParams();
 
-  params.addClassDescription("Function created by staging.");
+  params.addClassDescription("Function defined by means of blocks of type StagedFunctionValueChange.");
 
   return params;
 }
