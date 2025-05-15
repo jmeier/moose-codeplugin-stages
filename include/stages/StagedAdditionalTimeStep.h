@@ -22,11 +22,11 @@ public:
 
   StagedAdditionalTimeStep(const InputParameters & parameters);
 
-  Real getTime();
+  std::vector<Real> getTimes();
 
   std::vector<Real> getTimesForTimeStepper() override;
 
 private:
-  const Real _time;
+  const std::vector<Real> _times;
 
 };

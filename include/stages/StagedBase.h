@@ -36,6 +36,11 @@ public:
 
 protected:
   Real parseTime(std::string s, bool allow_empty = false);
+  std::vector<Real> parseTimes(std::string s, std::string delimiter);
+
+  // String split
+  std::vector<std::string> split(std::string s, std::string delimiter);
+  std::vector<std::string> split(const std::string &s, char delim);
 
 private:
   const std::string _name;
@@ -45,3 +50,4 @@ private:
 
   bool isWhitespace(std::string s);
 };
+

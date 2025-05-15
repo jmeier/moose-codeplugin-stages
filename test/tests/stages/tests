@@ -18,4 +18,10 @@
     csvdiff = 'staged_function_out.csv'
     requirement = 'The system should be able to stage function values.'
   []
+  [additional_time_steps]
+    type = 'CSVDiff'
+    input = 'additional_time_steps.i'
+    csvdiff = 'additional_time_steps_out.csv'
+    requirement = 'The system should be able to stage additional time steps.'
+  []
 []
