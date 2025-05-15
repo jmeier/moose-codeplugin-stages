@@ -18,6 +18,12 @@
 class StagedAdditionalTimeStep : public StagedBase
 {
 public:
+  enum class DeltaTimeAlignType
+  {
+    START = 0,
+    END = 1
+  };
+
   static InputParameters validParams();
 
   StagedAdditionalTimeStep(const InputParameters & parameters);
@@ -29,6 +35,9 @@ public:
 
 private:
   const std::vector<Real> _times;
+
   const int _count;
 
+  const Real _delta_time;
+  const DeltaTimeAlignType _delta_time_align;
 };

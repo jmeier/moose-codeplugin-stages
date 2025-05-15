@@ -71,6 +71,22 @@
       time = 't-.25; t-0.50'
     []
   []
+  [Stage6]
+    t = 6
+    [Stage6_AdditionalTimeStep]
+      type = 'StagedAdditionalTimeStep'
+      delta_time = 0.17
+      delta_time_align = 'END'
+    []
+  []
+  [Stage7]
+    t = 7
+    [Stage7_AdditionalTimeStep]
+      type = 'StagedAdditionalTimeStep'
+      delta_time = 0.17
+      delta_time_align = 'START'
+    []
+  []
 []
 
 [Debug]
@@ -96,7 +112,7 @@
 [Executioner]
   type = Transient
 
-  end_time = 5.0
+  end_time = 7.0
   [TimeSteppers]
     [StagedTimeSequenceStepper1]
       # we use the time steps defined in the Stages-Blocks
