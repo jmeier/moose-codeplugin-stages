@@ -8,6 +8,8 @@
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
 #include "TimedEnableControl.h"
+#include "ConditionalEnableControl.h"
+#include "FEProblemBase.h"
 
 registerMooseObject(MOOSEAPPNAME, TimedEnableControl);
 

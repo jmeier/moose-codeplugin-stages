@@ -11,6 +11,7 @@
 
 #include "ConditionalEnableControl.h"
 
+// Forward declarations
 class Times;
 
 /**
